@@ -1,0 +1,83 @@
+{
+  "mode": "All",
+  "policyRule": {
+    "if": {
+      "allOf": [
+        {
+          "equals": "Microsoft.Sql/servers/databases",
+          "field": "type"
+        },
+        {
+          "field": "name",
+          "notEquals": "master"
+        }
+      ]
+    },
+    "then": {
+      "details": {
+        "deployment": {
+          "properties": {
+            "mode": "incremental",
+            "parameters": {
+              "fullDbName": {
+                "value": "[field('fullName')]"
+              }
+            },
+            "template": {
+              "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+              "contentVersion": "1.0.0.0",
+              "parameters": {
+                "fullDbName": {
+                  "type": "string"
+                }
+              },
+              "resources": [
+                {
+                  "apiVersion": "2022-05-01-preview",
+                  "name": "[concat(parameters('fullDbName'), '/current')]",
+                  "properties": {
+                    "state": "Enabled"
+                  },
+                  "type": "Microsoft.Sql/servers/databases/transparentDataEncryption"
+                }
+              ]
+            }
+          }
+        },
+        "existenceCondition": {
+          "anyOf": [
+            {
+              "equals": "enabled",
+              "field": "Microsoft.Sql/transparentDataEncryption.status"
+            },
+            {
+              "equals": "enabled",
+              "field": "Microsoft.Sql/servers/databases/transparentDataEncryption/state"
+            }
+          ]
+        },
+        "name": "current",
+        "roleDefinitionIds": [
+          "/providers/microsoft.authorization/roleDefinitions/9b7fa17d-e63e-47b0-bb0a-15c516ac86ec"
+        ],
+        "type": "Microsoft.Sql/servers/databases/transparentDataEncryption"
+      },
+      "effect": "[parameters('policyEffect')]"
+    }
+  },
+  "parameters": {
+    "policyEffect": {
+      "type": "string",
+      "metadata": {
+        "displayName": "Allowed Effect",
+        "description": "The policy effects to use"
+      },
+      "allowedValues": [
+        "AuditIfNotExists",
+        "Disabled",
+        "DeployIfNotExists"
+      ],
+      "defaultValue": "AuditIfNotExists"
+    }
+  }
+}

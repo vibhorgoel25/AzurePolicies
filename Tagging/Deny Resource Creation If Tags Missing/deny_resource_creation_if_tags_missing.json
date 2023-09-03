@@ -1,0 +1,139 @@
+{
+  "mode": "Indexed",
+  "policyRule": {
+    "if": {
+      "allof": [
+        {
+          "field": "type",
+          "notin": "[parameters('excluded_resource_types')]"
+        },
+        {
+          "not": {
+            "allof": [
+              {
+                "exists": "true",
+                "field": "[concat('tags[', parameters('CostCenter'), ']')]"
+              },
+              {
+                "field": "[concat('tags[', parameters('CostCenter'), ']')]",
+                "notequals": ""
+              },
+              {
+                "exists": "true",
+                "field": "[concat('tags[', parameters('Owner'), ']')]"
+              },
+              {
+                "field": "[concat('tags[', parameters('Owner'), ']')]",
+                "notequals": ""
+              },
+              {
+                "exists": "true",
+                "field": "[concat('tags[', parameters('Creator'), ']')]"
+              },
+              {
+                "field": "[concat('tags[', parameters('Creator'), ']')]",
+                "notequals": ""
+              },
+              {
+                "exists": "true",
+                "field": "[concat('tags[', parameters('ProductLineID'), ']')]"
+              },
+              {
+                "field": "[concat('tags[', parameters('ProductLineID'), ']')]",
+                "notequals": ""
+              },
+              {
+                "exists": "true",
+                "field": "[concat('tags[', parameters('SupportGroupID'), ']')]"
+              },
+              {
+                "field": "[concat('tags[', parameters('SupportGroupID'), ']')]",
+                "notequals": ""
+              },
+              {
+                "field": "[concat('tags[', parameters('ApplicationID'), ']')]",
+                "notequals": ""
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "then": {
+      "effect": "[parameters('policyEffect')]"
+    }
+  },
+  "parameters": {
+    "ApplicationID": {
+      "type": "String",
+      "metadata": {
+        "displayName": "Specify Tag Name as ApplicationID",
+        "description": null
+      },
+      "defaultValue": "ApplicationID"
+    },
+    "CostCenter": {
+      "type": "String",
+      "metadata": {
+        "displayName": "Specify Tag Name as CostCenter",
+        "description": null
+      },
+      "defaultValue": "CostCenter"
+    },
+    "Creator": {
+      "type": "String",
+      "metadata": {
+        "displayName": "Specify Tag Name as Creator",
+        "description": null
+      },
+      "defaultValue": "Creator"
+    },
+    "Owner": {
+      "type": "String",
+      "metadata": {
+        "displayName": "Specify Tag Name as Owner",
+        "description": null
+      },
+      "defaultValue": "Owner"
+    },
+    "ProductLineID": {
+      "type": "String",
+      "metadata": {
+        "displayName": "Specify Tag Name as ProductLineID",
+        "description": null
+      },
+      "defaultValue": "ProductLineID"
+    },
+    "SupportGroupID": {
+      "type": "String",
+      "metadata": {
+        "displayName": "Specify Tag Name as SupportGroupID",
+        "description": null
+      },
+      "defaultValue": "SupportGroupID"
+    },
+    "excluded_resource_types": {
+      "type": "Array",
+      "metadata": {
+        "displayName": "Excluded Resource Types",
+        "description": "List of excluded resource types"
+      },
+      "defaultValue": [
+        "Microsoft.Compute/restorePointCollections"
+      ]
+    },
+    "policyEffect": {
+      "type": "string",
+      "metadata": {
+        "displayName": "Allowed Effect",
+        "description": "The policy effects to use"
+      },
+      "allowedValues": [
+        "audit",
+        "disabled",
+        "deny"
+      ],
+      "defaultValue": "audit"
+    }
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "mode": "All",
+  "policyRule": {
+    "if": {
+      "allof": [
+        {
+          "equals": "Microsoft.Storage/storageAccounts",
+          "field": "type"
+        },
+        {
+          "exists": "true",
+          "field": "Microsoft.Storage/storageAccounts/allowBlobPublicAccess"
+        },
+        {
+          "equals": "true",
+          "field": "Microsoft.Storage/storageAccounts/allowBlobPublicAccess"
+        }
+      ]
+    },
+    "then": {
+      "effect": "[parameters('policyEffect')]"
+    }
+  },
+  "parameters": {
+    "policyEffect": {
+      "type": "string",
+      "metadata": {
+        "displayName": "Allowed Effect",
+        "description": "The policy effects to use"
+      },
+      "allowedValues": [
+        "audit",
+        "disabled",
+        "deny"
+      ],
+      "defaultValue": "audit"
+    }
+  }
+}

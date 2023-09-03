@@ -1,1 +1,1 @@
-This policy denies creation of Azure MySQL single servers if SSL is not enabled.
+This section contains various policies related to Azure Storage Account service.

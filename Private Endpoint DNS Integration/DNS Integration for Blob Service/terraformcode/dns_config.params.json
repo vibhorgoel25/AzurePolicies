@@ -1,0 +1,22 @@
+{
+    "privateDnsZoneId": {
+      "type": "string",
+      "metadata": {
+        "description": "The private DNS zone ID to use for this resource type",
+        "displayName": "privateDnsZoneId"
+      }
+    },
+    "policyEffect": {
+      "type": "string",
+      "metadata": {
+        "description": "The policy effects to use",
+        "displayName": "Allowed Effect"
+      },
+      "allowedValues": [
+        "AuditIfNotExists",
+        "disabled",
+        "DeployIfNotExists"
+      ],
+      "defaultValue": "AuditIfNotExists"
+    }   
+}

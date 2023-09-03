@@ -1,0 +1,125 @@
+{
+  "resourceLocation": {
+    "type": "String",
+    "metadata": {
+      "displayName": "Resource Location",
+      "description": "Resource Location must be the same as the Event Hub",
+      "strongType": "location"
+    }
+  },
+  "profileName": {
+    "type": "String",
+    "metadata": {
+      "displayName": "Profile Name for Config",
+      "description": "The profile name Azure Diagnostics",
+      "defaultValue": "diag-to-siem"
+    }
+  },
+  "eventHubName": {
+    "type": "String",
+    "metadata": {
+      "displayName": "EventHub Name",
+      "description": "The event hub for Azure Diagnostics",
+      "strongType": "Microsoft.EventHub/Namespaces/EventHubs",
+      "assignPermissions": true
+    }
+  },
+  "eventHubRuleId": {
+    "type": "String",
+    "metadata": {
+      "displayName": "EventHubRuleID",
+      "description": "The event hub RuleID for Azure Diagnostics",
+      "strongType": "Microsoft.EventHub/Namespaces/AuthorizationRules",
+      "assignPermissions": true
+    }
+  },
+  "metricsEnabled": {
+    "type": "String",
+    "metadata": {
+      "displayName": "Enable Metrics",
+      "description": "Enable Metrics - True or False"
+    },
+    "allowedValues": [
+      "True",
+      "False"
+    ],
+    "defaultValue": "False"
+  },
+  "logsEnabled": {
+    "type": "String",
+    "metadata": {
+      "displayName": "Enable Logs",
+      "description": "Enable Logs - True or False"
+    },
+    "allowedValues": [
+      "True",
+      "False"
+    ],
+    "defaultValue": "True"
+  },
+  "policyEffectDatabricks": {
+    "type": "String",
+    "metadata": {
+      "displayName": "Policy effect for Databricks",
+      "description": "Policy effect for Databricks - disabled or deployIfNotExists"
+    },
+    "allowedValues": [
+      "disabled",
+      "auditifnotexists",
+      "deployifnotexists"
+    ],
+    "defaultValue": "auditifnotexists"
+  },
+  "policyEffectDBForPostgreSQL": {
+    "type": "String",
+    "metadata": {
+      "displayName": "Policy effect for DB for Postgre SQL",
+      "description": "Policy effect for DB for Postgre SQL - disabled or deployIfNotExists"
+    },
+    "allowedValues": [
+      "disabled",
+      "auditifnotexists",
+      "deployifnotexists"
+    ],
+    "defaultValue": "auditifnotexists"
+  },
+  "policyEffectAppGateway": {
+    "type": "String",
+    "metadata": {
+      "displayName": "Policy effect for Application Gateway",
+      "description": "Policy effect for Application Gateway to use"
+    },
+    "allowedValues": [
+      "disabled",
+      "auditifnotexists",
+      "deployifnotexists"
+    ],
+    "defaultValue": "auditifnotexists"
+  },  
+  "policyEffectPublicIpAddress": {
+    "type": "String",
+    "metadata": {
+      "displayName": "Policy effect for Public IP Address",
+      "description": "Policy effect for Public IP Address to use"
+    },
+    "allowedValues": [
+      "disabled",
+      "auditifnotexists",
+      "deployifnotexists"
+    ],
+    "defaultValue": "auditifnotexists"
+  },  
+  "policyEffectKeyVault": {
+    "type": "String",
+    "metadata": {
+      "displayName": "Policy effect for Key Vault",
+      "description": "Policy effect for KeyVault - disabled or deployIfNotExists"
+    },
+    "allowedValues": [
+      "disabled",
+      "auditifnotexists",
+      "deployifnotexists"
+    ],
+    "defaultValue": "auditifnotexists"
+  }
+}

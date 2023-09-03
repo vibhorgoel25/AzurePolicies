@@ -1,0 +1,104 @@
+{
+  "mode": "All",
+  "policyRule": {
+    "if": {
+      "allOf": [
+        {
+          "equals": "Microsoft.Network/privateEndpoints",
+          "field": "type"
+        },
+        {
+          "count": {
+            "field": "Microsoft.Network/privateEndpoints/privateLinkServiceConnections[*].groupIds[*]",
+            "where": {
+              "equals": "blob",
+              "field": "Microsoft.Network/privateEndpoints/privateLinkServiceConnections[*].groupIds[*]"
+            }
+          },
+          "greaterOrEquals": 1
+        }
+      ]
+    },
+    "then": {
+      "details": {
+        "EvaluationDelay": "PT5M",
+        "deployment": {
+          "properties": {
+            "mode": "incremental",
+            "parameters": {
+              "location": {
+                "value": "[field('location')]"
+              },
+              "privateDnsZoneId": {
+                "value": "[parameters('privateDnsZoneId')]"
+              },
+              "privateEndpointName": {
+                "value": "[field('name')]"
+              }
+            },
+            "template": {
+              "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+              "contentVersion": "1.0.0.0",
+              "parameters": {
+                "location": {
+                  "type": "string"
+                },
+                "privateDnsZoneId": {
+                  "type": "string"
+                },
+                "privateEndpointName": {
+                  "type": "string"
+                }
+              },
+              "resources": [
+                {
+                  "apiVersion": "2020-03-01",
+                  "location": "[parameters('location')]",
+                  "name": "[concat(parameters('privateEndpointName'), '/default')]",
+                  "properties": {
+                    "privateDnsZoneConfigs": [
+                      {
+                        "name": "privatelink_blob_core_windows_net",
+                        "properties": {
+                          "privateDnsZoneId": "[parameters('privateDnsZoneId')]"
+                        }
+                      }
+                    ]
+                  },
+                  "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups"
+                }
+              ]
+            }
+          }
+        },
+        "roleDefinitionIds": [
+          "/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7"
+        ],
+        "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups"
+      },
+      "effect": "[parameters('policyEffect')]"
+    }
+  },
+  "parameters": {
+    "policyEffect": {
+      "type": "string",
+      "metadata": {
+        "displayName": "Allowed Effect",
+        "description": "The policy effects to use"
+      },
+      "allowedValues": [
+        "AuditIfNotExists",
+        "disabled",
+        "DeployIfNotExists"
+      ],
+      "defaultValue": "AuditIfNotExists"
+    },
+    "privateDnsZoneId": {
+      "type": "string",
+      "metadata": {
+        "displayName": "privateDnsZoneId",
+        "description": "The private DNS zone ID to use for this resource type"
+      }
+    }
+  }
+}

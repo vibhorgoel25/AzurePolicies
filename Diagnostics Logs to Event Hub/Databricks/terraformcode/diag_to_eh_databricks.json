@@ -1,0 +1,198 @@
+{
+    "if": {
+        "allOf": [
+            {
+                "field": "type",
+                "equals": "Microsoft.Databricks/workspaces"
+            },
+            {
+                "field": "Microsoft.DataBricks/workspaces/sku.name",
+                "equals": "premium"
+            },            
+            {
+                "field": "location",
+                "equals": "[parameters('resourceLocation')]"
+            }
+        ]
+    },
+    "then": {
+        "effect": "[parameters('policyEffect')]",
+        "details": {
+            "type": "Microsoft.Insights/diagnosticSettings",
+            "existenceCondition": {
+                "allOf": [
+                    {
+                        "count": {
+                            "field": "Microsoft.Insights/diagnosticSettings/logs[*]",
+                            "where": {
+                                "allof": [
+                                    {
+                                        "field": "Microsoft.Insights/diagnosticSettings/logs[*].enabled",
+                                        "equals": "[parameters('logsEnabled')]"
+                                    },
+                                    {
+                                        "anyof": [
+                                            {
+                                                "field": "Microsoft.Insights/diagnosticSettings/logs[*].category",
+                                                "equals": "dbfs"
+                                            },
+                                            {
+                                                "field": "Microsoft.Insights/diagnosticSettings/logs[*].category",
+                                                "equals": "clusters"
+                                            },
+                                            {
+                                                "field": "Microsoft.Insights/diagnosticSettings/logs[*].category",
+                                                "equals": "accounts"
+                                            },   
+                                            {
+                                                "field": "Microsoft.Insights/diagnosticSettings/logs[*].category",
+                                                "equals": "jobs"
+                                            },
+                                            {
+                                                "field": "Microsoft.Insights/diagnosticSettings/logs[*].category",
+                                                "equals": "notebook"
+                                            },
+                                            {
+                                                "field": "Microsoft.Insights/diagnosticSettings/logs[*].category",
+                                                "equals": "ssh"
+                                            },
+                                            {
+                                                "field": "Microsoft.Insights/diagnosticSettings/logs[*].category",
+                                                "equals": "workspace"
+                                            },
+                                            {
+                                                "field": "Microsoft.Insights/diagnosticSettings/logs[*].category",
+                                                "equals": "secrets"
+                                            },
+                                            {
+                                                "field": "Microsoft.Insights/diagnosticSettings/logs[*].category",
+                                                "equals": "sqlPermissions"
+                                            },
+                                            {
+                                                "field": "Microsoft.Insights/diagnosticSettings/logs[*].category",
+                                                "equals": "instancePools"
+                                            }                                                                                                                                                                                                                                                                                                                                                            
+                                        ]
+                                    }
+                                ]
+                            }   
+                        },
+                        "greaterOrEquals": 10
+                    },
+                    {
+                        "field": "Microsoft.Insights/diagnosticSettings/eventHubName",
+                        "equals": "[last(split(parameters('eventHubName'), '/'))]"
+                    }
+                ]
+            },
+            "roleDefinitionIds": [
+                "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+            ],
+            "deployment": {
+                "properties": {
+                    "mode": "incremental",
+                    "template": {
+                        "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+                        "contentVersion": "1.0.0.0",
+                        "parameters": {
+                            "name": {
+                                "type": "string"
+                            },
+                            "location": {
+                                "type": "string"
+                            },
+                            "eventHubName": {
+                                "type": "string"
+                            },
+                            "eventHubRuleId": {
+                                "type": "string"
+                            },
+                            "logsEnabled": {
+                                "type": "string"
+                            },
+                            "profileName": {
+                                "type": "string"
+                            }
+                        },
+                        "variables": {},
+                        "resources": [
+                            {
+                                "type": "Microsoft.Databricks/workspaces/providers/diagnosticSettings",
+                                "apiVersion": "2017-05-01-preview",
+                                "name": "[concat(parameters('name'), '/', 'Microsoft.Insights/', parameters('profileName'))]",
+                                "location": "[parameters('location')]",
+                                "dependsOn": [],
+                                "properties": {
+                                    "eventHubName": "[last(split(parameters('eventHubName'), '/'))]",
+                                    "eventHubAuthorizationRuleId": "[parameters('eventHubRuleId')]",
+                                    "logs": [
+                                        {
+                                            "category": "dbfs",
+                                            "enabled": "[parameters('logsEnabled')]"
+                                        },
+                                        {
+                                            "category": "clusters",
+                                            "enabled": "[parameters('logsEnabled')]"
+                                        },
+                                        {
+                                            "category": "accounts",
+                                            "enabled": "[parameters('logsEnabled')]"
+                                        },
+                                        {
+                                            "category": "jobs",
+                                            "enabled": "[parameters('logsEnabled')]"
+                                        },
+                                        {
+                                            "category": "notebook",
+                                            "enabled": "[parameters('logsEnabled')]"
+                                        },
+                                        {
+                                            "category": "ssh",
+                                            "enabled": "[parameters('logsEnabled')]"
+                                        },
+                                        {
+                                            "category": "workspace",
+                                            "enabled": "[parameters('logsEnabled')]"
+                                        },
+                                        {
+                                            "category": "secrets",
+                                            "enabled": "[parameters('logsEnabled')]"
+                                        },
+                                        {
+                                            "category": "sqlPermissions",
+                                            "enabled": "[parameters('logsEnabled')]"
+                                        },
+                                        {
+                                            "category": "instancePools",
+                                            "enabled": "[parameters('logsEnabled')]"
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    },
+                    "parameters": {
+                        "eventHubName": {
+                            "value": "[parameters('eventHubName')]"
+                        },
+                        "location": {
+                            "value": "[field('location')]"
+                        },
+                        "name": {
+                            "value": "[field('name')]"
+                        },
+                        "eventHubRuleId": {
+                            "value": "[parameters('eventHubRuleId')]"
+                        },
+                        "logsEnabled": {
+                            "value": "[parameters('logsEnabled')]"
+                        },
+                        "profileName": {
+                            "value": "[parameters('profileName')]"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,6 +1,6 @@
-#This policy set definition refers various policy definitions for diagnostics logs for azure services.
+#Sample terraform policy set defintion code referencing various policy defintions under it. 
 #This policy set also makes use of how to define parameters for policy set itself which can be reused in policy definition reference block.
-#Please adjust the code below to meet any values as per your requirement.
+#Please replace the values as desired in below code.
 
 # Create the Policy Initiative with all above policies
 #

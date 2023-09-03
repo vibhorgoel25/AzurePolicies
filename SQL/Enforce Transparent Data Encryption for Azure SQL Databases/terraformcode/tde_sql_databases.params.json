@@ -1,0 +1,15 @@
+{
+  "policyEffect": {
+    "type": "string",
+    "metadata": {
+      "description": "The policy effects to use",
+      "displayName": "Allowed Effect"
+    },
+    "allowedValues": [
+      "AuditIfNotExists",
+      "Disabled",
+      "DeployIfNotExists"
+    ],
+    "defaultValue": "AuditIfNotExists"
+  }   
+}

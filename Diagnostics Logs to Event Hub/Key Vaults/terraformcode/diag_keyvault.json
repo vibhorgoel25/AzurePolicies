@@ -1,0 +1,142 @@
+{
+  "if": {
+    "allOf": [
+      {
+        "field": "type",
+        "equals": "Microsoft.KeyVault/vaults"
+      },
+      {
+        "field": "location",
+        "equals": "[parameters('eventHubLocation')]"
+      }
+    ]
+  },
+  "then": {
+    "effect": "[parameters('policyEffect')]",
+    "details": {
+      "type": "Microsoft.Insights/diagnosticSettings",
+      "name": "[parameters('profileName')]",
+      "existenceCondition": {
+        "allOf": [
+          {
+            "count": {
+              "field": "Microsoft.Insights/diagnosticSettings/logs[*]",
+              "where": {
+                "allof": [
+                  {
+                    "field": "Microsoft.Insights/diagnosticSettings/logs[*].enabled",
+                    "equals": "[parameters('logsEnabled')]"
+                  },
+                  {
+                    "anyof": [
+                      {
+                        "field": "Microsoft.Insights/diagnosticSettings/logs[*].category",
+                        "equals": "AuditEvent"
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            "greaterOrEquals": 1
+          },
+          {
+            "field": "Microsoft.Insights/diagnosticSettings/metrics.enabled",
+            "equals": "[parameters('metricsEnabled')]"
+          },
+          {
+            "field": "Microsoft.Insights/diagnosticSettings/eventHubName",
+            "equals": "[last(split(parameters('eventHubName'), '/'))]"
+          }
+        ]
+      },
+      "roleDefinitionIds": [
+        "/providers/microsoft.authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+      ],
+      "deployment": {
+        "properties": {
+          "mode": "incremental",
+          "template": {
+            "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+            "contentVersion": "1.0.0.0",
+            "parameters": {
+              "vaultName": {
+                "type": "string"
+              },
+              "location": {
+                "type": "string"
+              },
+              "eventHubName": {
+                "type": "string"
+              },
+              "eventHubRuleId": {
+                "type": "string"
+              },
+              "metricsEnabled": {
+                "type": "string"
+              },
+              "logsEnabled": {
+                "type": "string"
+              },
+              "profileName": {
+                "type": "string"
+              }
+            },
+            "resources": [
+              {
+                "type": "Microsoft.KeyVault/vaults/providers/diagnosticSettings",
+                "apiVersion": "2017-05-01-preview",
+                "name": "[concat(parameters('vaultName'), '/', 'Microsoft.Insights/', parameters('profileName'))]",
+                "location": "[parameters('location')]",
+                "dependsOn": [],
+                "properties": {
+                  "eventHubAuthorizationRuleId": "[parameters('eventHubRuleId')]",
+                  "eventHubName": "[parameters('eventHubName')]",
+                  "metrics": [
+                    {
+                      "category": "AllMetrics",
+                      "enabled": "[parameters('metricsEnabled')]",
+                      "retentionPolicy": {
+                        "enabled": false,
+                        "days": 0
+                      }
+                    }
+                  ],
+                  "logs": [
+                    {
+                      "category": "AuditEvent",
+                      "enabled": "[parameters('logsEnabled')]"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "parameters": {
+            "location": {
+              "value": "[field('location')]"
+            },
+            "vaultName": {
+              "value": "[field('name')]"
+            },
+            "eventHubName": {
+              "value": "[parameters('eventHubName')]"
+            },
+            "eventHubRuleId": {
+              "value": "[parameters('eventHubRuleId')]"
+            },
+            "metricsEnabled": {
+              "value": "[parameters('metricsEnabled')]"
+            },
+            "logsEnabled": {
+              "value": "[parameters('logsEnabled')]"
+            },
+            "profileName": {
+              "value": "[parameters('profileName')]"
+            }
+          }
+        }
+      }
+    }
+  }
+}

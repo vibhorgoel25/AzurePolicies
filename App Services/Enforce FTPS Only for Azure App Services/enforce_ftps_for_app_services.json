@@ -1,0 +1,76 @@
+{
+  "mode": "All",
+  "policyRule": {
+    "if": {
+      "equals": "Microsoft.Web/sites",
+      "field": "type"
+    },
+    "then": {
+      "details": {
+        "deployment": {
+          "properties": {
+            "mode": "incremental",
+            "parameters": {
+              "location": {
+                "value": "[field('location')]"
+              },
+              "webappname": {
+                "value": "[field('name')]"
+              }
+            },
+            "template": {
+              "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+              "contentVersion": "1.0.0.0",
+              "parameters": {
+                "location": {
+                  "type": "string"
+                },
+                "webappname": {
+                  "type": "string"
+                }
+              },
+              "resources": [
+                {
+                  "apiVersion": "2022-09-01",
+                  "location": "[parameters('location')]",
+                  "name": "[concat(parameters('webappname'), '/web')]",
+                  "properties": {
+                    "ftpsState": "FtpsOnly"
+                  },
+                  "type": "Microsoft.Web/sites/config"
+                }
+              ]
+            }
+          }
+        },
+        "existenceCondition": {
+          "field": "Microsoft.Web/sites/config/ftpsState",
+          "in": [
+            "FtpsOnly",
+            "Disabled"
+          ]
+        },
+        "roleDefinitionIds": [
+          "/providers/Microsoft.Authorization/roleDefinitions/de139f84-1756-47ae-9be6-808fbbe84772"
+        ],
+        "type": "Microsoft.Web/sites/config"
+      },
+      "effect": "[parameters('policyEffect')]"
+    }
+  },
+  "parameters": {
+    "policyEffect": {
+      "type": "string",
+      "metadata": {
+        "displayName": "Allowed Effect",
+        "description": "The policy effects to use"
+      },
+      "allowedValues": [
+        "AuditIfNotExists",
+        "Disabled",
+        "DeployIfNotExists"
+      ],
+      "defaultValue": "AuditIfNotExists"
+    }
+  }
+}

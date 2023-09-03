@@ -1,0 +1,202 @@
+{
+  "mode": "Indexed",
+  "policyRule": {
+    "if": {
+      "allOf": [
+        {
+          "field": "type",
+          "equals": "Microsoft.DBforPostgreSQL/servers"
+        },
+        {
+          "field": "location",
+          "equals": "[parameters('resourceLocation')]"
+        }
+      ]
+    },
+    "then": {
+      "effect": "[parameters('policyEffect')]",
+      "details": {
+        "type": "Microsoft.Insights/diagnosticSettings",
+        "existenceCondition": {
+          "allOf": [
+            {
+              "field": "Microsoft.Insights/diagnosticSettings/logs.enabled",
+              "equals": "[parameters('logsEnabled')]"
+            },
+            {
+              "field": "Microsoft.Insights/diagnosticSettings/metrics.enabled",
+              "equals": "[parameters('metricsEnabled')]"
+            },
+            {
+              "field": "Microsoft.Insights/diagnosticSettings/eventHubName",
+              "equals": "[last(split(parameters('eventHubName'), '/'))]"
+            }
+          ]
+        },
+        "roleDefinitionIds": [
+          "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+        ],
+        "deployment": {
+          "properties": {
+            "mode": "incremental",
+            "template": {
+              "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+              "contentVersion": "1.0.0.0",
+              "parameters": {
+                "name": {
+                  "type": "string"
+                },
+                "location": {
+                  "type": "string"
+                },
+                "eventHubName": {
+                  "type": "string"
+                },
+                "eventHubRuleId": {
+                  "type": "string"
+                },
+                "metricsEnabled": {
+                  "type": "string"
+                },
+                "logsEnabled": {
+                  "type": "string"
+                },
+                "profileName": {
+                  "type": "string"
+                }
+              },
+              "variables": {},
+              "resources": [
+                {
+                  "type": "Microsoft.DBforPostgreSQL/servers/providers/diagnosticSettings",
+                  "apiVersion": "2017-05-01-preview",
+                  "name": "[concat(parameters('name'), '/', 'Microsoft.Insights/', parameters('profileName'))]",
+                  "location": "[parameters('location')]",
+                  "properties": {
+                    "eventHubName": "[last(split(parameters('eventHubName'), '/'))]",
+                    "eventHubAuthorizationRuleId": "[parameters('eventHubRuleId')]",
+                    "metrics": [
+                      {
+                        "category": "AllMetrics",
+                        "enabled": "[parameters('metricsEnabled')]",
+                        "retentionPolicy": {
+                          "enabled": false,
+                          "days": 0
+                        }
+                      }
+                    ],
+                    "logs": [
+                      {
+                        "category": "PostgreSQLLogs",
+                        "enabled": "[parameters('logsEnabled')]"
+                      },
+                      {
+                        "category": "QueryStoreRuntimeStatistics",
+                        "enabled": "[parameters('logsEnabled')]"
+                      },
+                      {
+                        "category": "QueryStoreWaitStatistics",
+                        "enabled": "[parameters('logsEnabled')]"
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            "parameters": {
+              "eventHubName": {
+                "value": "[parameters('eventHubName')]"
+              },
+              "location": {
+                "value": "[field('location')]"
+              },
+              "name": {
+                "value": "[field('name')]"
+              },
+              "eventHubRuleId": {
+                "value": "[parameters('eventHubRuleId')]"
+              },
+              "metricsEnabled": {
+                "value": "[parameters('metricsEnabled')]"
+              },
+              "logsEnabled": {
+                "value": "[parameters('logsEnabled')]"
+              },
+              "profileName": {
+                "value": "[parameters('profileName')]"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "parameters": {
+    "profileName": {
+      "type": "String",
+      "metadata": {
+        "displayName": "Profile Name for Config",
+        "description": "The profile name Azure Diagnostics"
+      },
+      "defaultValue": "diaglogs"
+    },
+    "eventHubName": {
+      "type": "String",
+      "metadata": {
+        "displayName": "EventHub Name",
+        "description": "The event hub for Azure Diagnostics"
+      }
+    },
+    "eventHubRuleId": {
+      "type": "String",
+      "metadata": {
+        "displayName": "EventHubRuleID",
+        "description": "The event hub RuleID for Azure Diagnostics"
+      }
+    },
+    "resourceLocation": {
+      "type": "String",
+      "metadata": {
+        "displayName": "Resource Location",
+        "description": "Resource Location must be the same as the Event Hub"
+      }
+    },
+    "metricsEnabled": {
+      "type": "String",
+      "metadata": {
+        "displayName": "Enable Metrics",
+        "description": "Enable Metrics - True or False"
+      },
+      "allowedValues": [
+        "True",
+        "False"
+      ],
+      "defaultValue": "False"
+    },
+    "logsEnabled": {
+      "type": "String",
+      "metadata": {
+        "displayName": "Enable Logs",
+        "description": "Enable Logs - True or False"
+      },
+      "allowedValues": [
+        "True",
+        "False"
+      ],
+      "defaultValue": "True"
+    },
+    "policyEffect": {
+      "type": "String",
+      "metadata": {
+        "displayName": "Policy effect",
+        "description": "Policy effect - disabled or deployIfNotExists"
+      },
+      "allowedValues": [
+        "Disabled",
+        "AuditIfNotExists",
+        "DeployIfNotExists"
+      ],
+      "defaultValue": "AuditIfNotExists"
+    }
+  }
+}

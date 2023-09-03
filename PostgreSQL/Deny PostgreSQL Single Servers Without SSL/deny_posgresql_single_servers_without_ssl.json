@@ -1,0 +1,39 @@
+{
+  "mode": "All",
+  "policyRule": {
+    "if": {
+      "allof": [
+        {
+          "equals": "Microsoft.DBforPostgreSQL/servers",
+          "field": "type"
+        },
+        {
+          "exists": "true",
+          "field": "Microsoft.DBforPostgreSQL/servers/sslEnforcement"
+        },
+        {
+          "field": "Microsoft.DBforPostgreSQL/servers/sslEnforcement",
+          "notEquals": "Enabled"
+        }
+      ]
+    },
+    "then": {
+      "effect": "[parameters('policyEffect')]"
+    }
+  },
+  "parameters": {
+    "policyEffect": {
+      "type": "string",
+      "metadata": {
+        "displayName": "Allowed Effect",
+        "description": "The policy effects to use"
+      },
+      "allowedValues": [
+        "audit",
+        "disabled",
+        "deny"
+      ],
+      "defaultValue": "audit"
+    }
+  }
+}

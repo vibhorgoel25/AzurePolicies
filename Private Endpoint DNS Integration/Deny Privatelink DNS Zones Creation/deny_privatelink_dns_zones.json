@@ -1,0 +1,39 @@
+{
+  "mode": "All",
+  "policyRule": {
+    "if": {
+      "allof": [
+        {
+          "equals": "Microsoft.Network/privateDnsZones",
+          "field": "type"
+        },
+        {
+          "contains": "privatelink.",
+          "field": "name"
+        },
+        {
+          "field": "name",
+          "notlike": "*.azmk8s.io"
+        }
+      ]
+    },
+    "then": {
+      "effect": "[parameters('policyEffect')]"
+    }
+  },
+  "parameters": {
+    "policyEffect": {
+      "type": "string",
+      "metadata": {
+        "displayName": "Allowed Effect",
+        "description": "The policy effects to use"
+      },
+      "allowedValues": [
+        "audit",
+        "disabled",
+        "deny"
+      ],
+      "defaultValue": "audit"
+    }
+  }
+}

@@ -1,0 +1,67 @@
+{
+    "policyEffect": {
+      "type": "string",
+      "metadata": {
+        "description": "The policy effects to use",
+        "displayName": "Allowed Effect"
+      },
+      "allowedValues": [
+        "audit",
+        "disabled",
+        "deny"
+      ],
+      "defaultValue": "audit"
+    },        
+    "CostCenter": {
+      "type": "String",
+      "metadata": {
+        "displayName": "Specify Tag Name as CostCenter"
+      },
+      "defaultValue": "CostCenter"
+    },
+    "Owner": {
+      "type": "String",
+      "metadata": {
+        "displayName": "Specify Tag Name as Owner"
+      },
+      "defaultValue": "Owner"
+    },  
+    "Creator": {
+      "type": "String",
+      "metadata": {
+        "displayName": "Specify Tag Name as Creator"
+      },
+      "defaultValue": "Creator"
+    },
+    "ProductLineID": {
+      "type": "String",
+      "metadata": {
+        "displayName": "Specify Tag Name as ProductLineID"
+      },
+      "defaultValue": "ProductLineID"
+    },  
+    "SupportGroupID": {
+      "type": "String",
+      "metadata": {
+        "displayName": "Specify Tag Name as SupportGroupID"
+      },
+      "defaultValue": "SupportGroupID"
+    },
+    "ApplicationID": {
+      "type": "String",
+      "metadata": {
+        "displayName": "Specify Tag Name as ApplicationID"
+      },
+      "defaultValue": "ApplicationID"
+    },    
+    "excluded_resource_types": {
+      "type": "Array",
+      "metadata": {
+        "displayName": "Excluded Resource Types",
+        "description": "List of excluded resource types"
+      },
+      "defaultValue": [
+        "Microsoft.Compute/restorePointCollections"
+      ]
+    }    
+}

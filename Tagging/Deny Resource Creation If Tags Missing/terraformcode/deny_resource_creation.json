@@ -1,0 +1,63 @@
+{
+  "if": {
+    "allof": [
+      {
+        "field": "type",
+        "notin": "[parameters('excluded_resource_types')]"
+      },
+      {
+        "not": {
+          "allof": [
+            {
+              "exists": "true",
+              "field": "[concat('tags[', parameters('CostCenter'), ']')]"
+            },
+            {
+              "field": "[concat('tags[', parameters('CostCenter'), ']')]",
+              "notequals": ""
+            },
+            {
+              "exists": "true",
+              "field": "[concat('tags[', parameters('Owner'), ']')]"
+            },
+            {
+              "field": "[concat('tags[', parameters('Owner'), ']')]",
+              "notequals": ""
+            },
+            {
+              "exists": "true",
+              "field": "[concat('tags[', parameters('Creator'), ']')]"
+            },
+            {
+              "field": "[concat('tags[', parameters('Creator'), ']')]",
+              "notequals": ""
+            },
+            {
+              "exists": "true",
+              "field": "[concat('tags[', parameters('ProductLineID'), ']')]"
+            },
+            {
+              "field": "[concat('tags[', parameters('ProductLineID'), ']')]",
+              "notequals": ""
+            },
+            {
+              "exists": "true",
+              "field": "[concat('tags[', parameters('SupportGroupID'), ']')]"
+            },
+            {
+              "field": "[concat('tags[', parameters('SupportGroupID'), ']')]",
+              "notequals": ""
+            },
+            {
+              "field": "[concat('tags[', parameters('ApplicationID'), ']')]",
+              "notequals": ""
+            }            
+          ]
+        } 
+      }
+    ]  
+  },
+  "then": {
+    "effect": "[parameters('policyEffect')]"
+  }
+}

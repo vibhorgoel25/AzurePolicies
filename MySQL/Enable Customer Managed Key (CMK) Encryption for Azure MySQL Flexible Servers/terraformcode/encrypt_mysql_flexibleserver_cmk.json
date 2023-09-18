@@ -1,0 +1,87 @@
+{
+  "if": {
+    "allOf": [
+      {
+        "equals": "Microsoft.DBForMySql/flexibleServers",
+        "field": "type"
+      },
+      {
+        "equals": "[parameters('resourceLocation')]",
+        "field": "location"
+      }
+    ]
+  },
+  "then": {
+    "effect": "[parameters('policyEffect')]",
+    "details": {
+      "type": "Microsoft.DBForMySql/flexibleServers",
+      "name": "[field('name')]",
+      "roleDefinitionIds": [
+        "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+      ],
+      "existenceCondition": {
+        "field": "Microsoft.DBForMySql/flexibleServers/dataEncryption",
+        "exists": true
+      },
+      "deployment": {
+        "properties": {
+          "mode": "incremental",
+          "parameters": {
+            "KeyVaultKey": {
+              "value": "[parameters('KeyVaultKey')]"
+            },
+            "servername": {
+              "value": "[field('name')]"
+            },
+            "UAMIId": {
+              "value": "[parameters('UAMIId')]"
+            },
+            "location": {
+              "value": "[field('location')]"
+            }
+          },
+          "template": {
+            "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+            "contentVersion": "1.0.0.0",
+            "parameters": {
+              "servername": {
+                "type": "string"
+              },
+              "UAMIId": {
+                "type": "string"
+              },
+              "KeyVaultKey": {
+                "type": "string"
+              },
+              "location": {
+                "type": "string"
+              }
+            },
+            "resources": [
+              {
+                "type": "Microsoft.DBForMySql/flexibleServers",
+                "apiVersion": "2021-05-01",
+                "name": "[parameters('serverName')]",
+                "location": "[parameters('location')]",
+                "identity": {
+                  "type": "UserAssigned",
+                  "userAssignedIdentities": {
+                    "[parameters('UAMIId')]": {}
+                  }
+                },
+                "properties": {
+                  "dataEncryption": {
+                    "type": "AzureKeyVault",
+                    "primaryKeyURI": "[parameters('KeyVaultKey')]",
+                    "primaryUserAssignedIdentityId": "[parameters('UAMIId')]"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}
+  

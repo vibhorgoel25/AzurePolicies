@@ -1,0 +1,37 @@
+{
+    "policyEffect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Allowed Effect",
+          "description": "The policy effects to use"
+        },
+        "allowedValues": [
+          "auditifnotexists",
+          "disabled",
+          "deployifnotexists"
+        ],
+        "defaultValue": "auditifnotexists"
+    },
+    "UAMIId": {
+        "type": "String",
+        "metadata": {
+          "displayName": "User Assigned Managed Identity ID",
+          "description": "The ID of the UAMI to use for CMK encryption"
+        }
+     },
+     "KeyVaultKey": {
+        "type": "String",
+        "metadata": {
+          "displayName": "KeyVaultKey",
+          "description": "KeyVault Key to use for encryption"
+        }
+    },
+    "resourceLocation": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Resource Location",
+          "description": "Resource Location must be the same as the Event Hub"
+        },
+        "defaultValue": ""  
+    }
+}
